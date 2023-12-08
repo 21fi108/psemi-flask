@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect # 変更
-from flask_sqlalchemy import SQLAlchemy # 追加
+from flask import Flask, render_template, request, redirect
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
@@ -33,6 +33,16 @@ def delete(id):
  db.session.commit()
  return redirect('/')
 
+@app.route('/update/<int:id>', methods=['GET', 'POST'])
+def update(id):
+ update_task = Todo.query.get(id)
+ if request.method == 'GET':
+  return render_template('update.html',task=update_task)
+ if request.method == 'POST':
+    update_task.title = request.form.get("title")
+    update_task.details = request.form.get("details")
+    db.session.commit()
+    return redirect('/')   
 
 if __name__ == "__main__":
  app.run(debug=True)
